@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.web.bind.annotation.CookieValue
 import javax.servlet.FilterChain
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
@@ -21,12 +20,15 @@ class CustomAuthenticationFilter(@Autowired private val authManager: Authenticat
     val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun attemptAuthentication(request: HttpServletRequest?, response: HttpServletResponse?): Authentication {
-        val user = request?.getParameter("username")
         // header fields:
         // request?.getHeader("username")
-        val password = request?.getParameter("password")
-       response?.addCookie(Cookie("yooo", "bro"))
+
+        // Sikkert en helt fucka måte å hente ut cookies på:
         //request?.cookies?.get(1)?.value
+
+        val user = request?.getParameter("username")
+        val password = request?.getParameter("password")
+        response?.addCookie(Cookie("yooo", "bro"))
         val authenticationToken = UsernamePasswordAuthenticationToken(user, password)
 
         return authManager.authenticate(authenticationToken)
